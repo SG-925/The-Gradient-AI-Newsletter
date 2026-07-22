@@ -19,4 +19,5 @@ export interface NewsletterIssue {
   articles: Article[];
   tags: string[];
   featuredImageUrl?: string;
+  publishedAt: Date;
 }
