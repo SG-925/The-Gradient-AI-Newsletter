@@ -12,11 +12,6 @@ const DEFAULT_TEMPERATURE = 0.7;
 const HEADLINE_MAX_LENGTH = 80;
 const MAX_FALLBACK_SENTENCES = 6;
 
-interface OpenAIMessage {
-  role: 'system' | 'user';
-  content: string;
-}
-
 interface OpenAIChatResponse {
   choices: [
     {

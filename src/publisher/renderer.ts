@@ -4,7 +4,7 @@ export function markdownToHtml(markdown: string): string {
   let inList = false;
 
   for (let i = 0; i < lines.length; i++) {
-    let line = lines[i];
+    const line = lines[i];
 
     if (inList && !/^[-*]\s/.test(line)) {
       output.push('</ul>');
