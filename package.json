@@ -1,0 +1,34 @@
+{
+  "name": "the-gradient-ai-newsletter",
+  "version": "0.1.0",
+  "description": "An AI Newsletter with daily updates about the latest news in AI",
+  "main": "dist/scripts/run.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "npm run build && node dist/scripts/run.js",
+    "test": "vitest run",
+    "lint": "eslint src --ext .ts"
+  },
+  "keywords": [
+    "ai",
+    "newsletter",
+    "rss",
+    "automation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cheerio": "^1.0.0-rc.12",
+    "date-fns": "^3.0.0",
+    "dotenv": "^16.3.0",
+    "rss-parser": "^3.13.0"
+  },
+  "devDependencies": {
+    "@types/cheerio": "^1.0.0",
+    "@types/node": "^20.10.0",
+    "@types/rss-parser": "^2.2.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  }
+}
