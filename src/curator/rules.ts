@@ -1,5 +1,3 @@
-import { Source } from '../types';
-
 export interface SourcePriorityRule {
   sourceNameSubstring: string;
   weight: number;
