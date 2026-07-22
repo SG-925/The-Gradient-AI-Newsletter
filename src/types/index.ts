@@ -29,3 +29,16 @@ export interface NewsletterIssue {
   tags: string[];
   featuredImageUrl?: string;
 }
+
+export interface Summary {
+  headline: string;
+  intro: string;
+  body: string;
+  sourceUrl: string;
+}
+
+export interface SummarizerConfig {
+  openaiApiKey?: string;
+  openaiModel?: string;
+  openaiTemperature?: number;
+}
