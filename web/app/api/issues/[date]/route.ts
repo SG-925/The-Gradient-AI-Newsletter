@@ -1,18 +1,24 @@
 export const dynamic = "force-dynamic";
 
-import { readIssuesFromMarkdown } from "@/lib/posts";
+import { getIssueByDate } from "@/lib/posts";
 import { NextResponse } from "next/server";
 
 export async function GET(
   request: Request,
-  { params }: { params: { date: string } }
+  { params }: { params: Promise<{ date: string }> }
 ) {
-  const issues = readIssuesFromMarkdown();
-  const issue = issues.find((i) => i.date === params.date);
+  const { date } = await params;
 
-  if (!issue) {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  try {
+    const issue = getIssueByDate(date);
+
+    if (!issue) {
+      return NextResponse.json({ error: "Issue not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(issue);
+  } catch (err) {
+    console.error(`Failed to fetch issue for date ${date}:`, err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
-
-  return NextResponse.json(issue);
 }

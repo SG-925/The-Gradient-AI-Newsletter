@@ -1,9 +1,18 @@
 export const dynamic = "force-dynamic";
 
-import { readIssuesFromMarkdown } from "@/lib/posts";
+import { getAllIssueDates, getIssueByDate } from "@/lib/posts";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const issues = readIssuesFromMarkdown();
-  return NextResponse.json(issues);
+  try {
+    const dates = getAllIssueDates();
+    const issues = dates
+      .map((date) => getIssueByDate(date))
+      .filter((issue): issue is NonNullable<typeof issue> => issue !== null);
+
+    return NextResponse.json(issues);
+  } catch (err) {
+    console.error("Failed to fetch issues:", err);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+  }
 }
