@@ -1,10 +1,32 @@
-export default function Home() {
+import HeroSection from "@/components/hero-section";
+import StatsBar from "@/components/stats-bar";
+import FeaturedCard from "@/components/featured-card";
+import HomeGrid from "@/components/home-grid";
+import DataLoader from "@/components/data-loader";
+
+export default async function Home() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center">
-      <h1 className="text-4xl font-bold">Welcome to The Gradient</h1>
-      <p className="mt-4 text-lg text-gray-600">
-        Your daily AI newsletter.
-      </p>
-    </div>
+    <DataLoader>
+      {({ issues }) => {
+        const latestIssue = issues[0] ?? {
+          id: "",
+          title: "The Gradient",
+          date: "",
+          intro: "Your daily AI newsletter.",
+          tags: [],
+          featuredImageUrl: undefined,
+          articles: [],
+        };
+
+        return (
+          <>
+            <HeroSection latestIssue={latestIssue} />
+            <StatsBar />
+            <FeaturedCard issue={latestIssue} />
+            <HomeGrid issues={issues} />
+          </>
+        );
+      }}
+    </DataLoader>
   );
 }

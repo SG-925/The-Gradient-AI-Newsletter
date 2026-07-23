@@ -39,6 +39,23 @@
 html {
   color: var(--foreground);
   background: var(--background);
+  scroll-behavior: smooth;
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes gradient-spin {
+  from { --gradient-angle: 0deg; }
+  to { --gradient-angle: 360deg; }
+}
+
+.gradient-border-spin {
+  background: conic-gradient(from var(--gradient-angle), #3b82f6, #22d3ee, #10b981, #34d399, #3b82f6);
+  animation: gradient-spin 6s linear infinite;
 }
 
 body {
