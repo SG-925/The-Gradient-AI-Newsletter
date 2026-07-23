@@ -236,7 +236,7 @@ export default function ArchivePage() {
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-20 text-center"
         >
-          <div className="mb-4 text-6xl">🔍</div>
+          <div className="mb-4 text-4xl">🔍</div>
           <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
             No issues found
           </h3>
