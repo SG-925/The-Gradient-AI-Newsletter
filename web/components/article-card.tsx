@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { NewsletterIssue } from "@/types";
 
@@ -23,10 +24,12 @@ export default function ArticleCard({ issue }: ArticleCardProps) {
       className="group block h-full rounded-2xl border border-gray-200 bg-white p-6 transition-all duration-300 hover:border-gray-300 hover:shadow-lg dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700 dark:hover:shadow-gray-900/30"
     >
       {issue.featuredImageUrl && (
-        <div className="mb-4 overflow-hidden rounded-xl">
-          <img
+        <div className="relative mb-4 overflow-hidden rounded-xl">
+          <Image
             src={issue.featuredImageUrl}
             alt={issue.title}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
             className="h-40 w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
