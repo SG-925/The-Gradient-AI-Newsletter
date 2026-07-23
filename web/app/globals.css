@@ -18,10 +18,6 @@
     --navbar-border: #1f2937;
     --footer-bg: #0a0a0a;
   }
-
-  * {
-    border-color: var(--navbar-border);
-  }
 }
 
 html {
