@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ThemeToggle from "@/components/theme-toggle";
@@ -10,13 +10,23 @@ const navLinkVariants = {
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.08, duration: 0.25, ease: "easeOut" },
+    transition: { delay: i * 0.1, type: "spring", stiffness: 300, damping: 24 },
   }),
   exit: { opacity: 0, y: -8, transition: { duration: 0.15 } },
 };
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -24,11 +34,17 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/80">
+    <nav
+      className={`sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-all duration-300 ${
+        scrolled
+          ? "border-bento-surface-dark/30 bg-bento-surface/80 shadow-[0_1px_3px_rgba(0,0,0,0.08)] dark:border-bento-surface-darkest/30 dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
+          : "border-gray-200 bg-white/80 dark:border-gray-800 dark:bg-gray-950/80"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-gray-900 dark:text-white"
+          className="shimmer-sweep text-xl font-bold tracking-tight text-gray-900 dark:text-white"
         >
           The Gradient
         </Link>
@@ -115,7 +131,11 @@ export default function Navbar() {
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="overflow-hidden border-t border-gray-200 md:hidden dark:border-gray-800"
+            className={`overflow-hidden md:hidden ${
+              scrolled
+                ? "border-t border-bento-surface-dark/30 dark:border-bento-surface-darkest/30"
+                : "border-t border-gray-200 dark:border-gray-800"
+            }`}
           >
             <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
               {navLinks.map(({ href, label }, i) => (
