@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useInView } from "framer-motion";
-import { useRef, ReactNode } from "react";
+import { useRef, ReactNode, Children } from "react";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -58,10 +58,10 @@ export default function ScrollReveal({
       };
 
   const shouldStagger =
-    staggerChildren !== undefined && React.Children.count(children) > 1;
+    staggerChildren !== undefined && Children.count(children) > 1;
 
   const content: ReactNode = shouldStagger
-    ? React.Children.map(children, (child, i) => (
+    ? Children.map(children, (child, i) => (
         <motion.div
           key={i}
           variants={childVariants}
