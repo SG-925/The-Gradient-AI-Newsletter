@@ -1,22 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ThemeToggle from "@/components/theme-toggle";
+import usePrefersReducedMotion from "@/hooks/use-prefers-reduced-motion";
 
 const navLinkVariants = {
   hidden: { opacity: 0, y: -8 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.08, duration: 0.25, ease: "easeOut" },
+    transition: { delay: i * 0.1, type: "spring", stiffness: 300, damping: 24 },
   }),
   exit: { opacity: 0, y: -8, transition: { duration: 0.15 } },
 };
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const navLinks = [
     { href: "/", label: "Home" },
@@ -24,11 +36,17 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/80">
+    <nav
+      className={`sticky top-0 z-50 w-full border-b backdrop-blur-xl transition-all duration-300 ${
+        scrolled
+          ? "border-bento-surface-dark/30 bg-bento-surface/80 shadow-[0_1px_3px_rgba(0,0,0,0.08)] dark:border-bento-surface-darkest/30 dark:shadow-[0_1px_3px_rgba(0,0,0,0.3)]"
+          : "border-gray-200 bg-white/80 dark:border-gray-800 dark:bg-gray-950/80"
+      }`}
+    >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="text-xl font-bold tracking-tight text-gray-900 dark:text-white"
+          className="shimmer-sweep text-xl font-bold tracking-tight text-gray-900 dark:text-white"
         >
           The Gradient
         </Link>
@@ -38,10 +56,10 @@ export default function Navbar() {
             <motion.div
               key={href}
               custom={0}
-              variants={navLinkVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
+              variants={prefersReducedMotion ? {} : navLinkVariants}
+              initial={prefersReducedMotion ? undefined : "hidden"}
+              animate={prefersReducedMotion ? undefined : "visible"}
+              exit={prefersReducedMotion ? undefined : "exit"}
             >
               <Link
                 href={href}
@@ -61,12 +79,11 @@ export default function Navbar() {
           <motion.button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            {...(prefersReducedMotion ? {} : { whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 } })}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
-            <motion.svg
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
               height="20"
@@ -82,10 +99,10 @@ export default function Navbar() {
                 {mobileMenuOpen ? (
                   <motion.g
                     key="close"
-                    initial={{ opacity: 0, rotate: -90 }}
+                    initial={prefersReducedMotion ? undefined : { opacity: 0, rotate: -90 }}
                     animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0, rotate: 90 }}
-                    transition={{ duration: 0.2 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, rotate: 90 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.2 }}
                   >
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
@@ -93,10 +110,10 @@ export default function Navbar() {
                 ) : (
                   <motion.g
                     key="open"
-                    initial={{ opacity: 0, rotate: 90 }}
+                    initial={prefersReducedMotion ? undefined : { opacity: 0, rotate: 90 }}
                     animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0, rotate: -90 }}
-                    transition={{ duration: 0.2 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, rotate: -90 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.2 }}
                   >
                     <path d="M3 12h18" />
                     <path d="M3 6h18" />
@@ -104,7 +121,7 @@ export default function Navbar() {
                   </motion.g>
                 )}
               </AnimatePresence>
-            </motion.svg>
+            </svg>
           </motion.button>
         </div>
       </div>
@@ -112,21 +129,25 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
+            initial={prefersReducedMotion ? undefined : { opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
-            className="overflow-hidden border-t border-gray-200 md:hidden dark:border-gray-800"
+            exit={prefersReducedMotion ? undefined : { opacity: 0, height: 0 }}
+            transition={prefersReducedMotion ? {} : { duration: 0.25, ease: "easeInOut" }}
+            className={`overflow-hidden md:hidden ${
+              scrolled
+                ? "border-t border-bento-surface-dark/30 dark:border-bento-surface-darkest/30"
+                : "border-t border-gray-200 dark:border-gray-800"
+            }`}
           >
             <div className="mx-auto max-w-7xl px-4 py-3 sm:px-6">
               {navLinks.map(({ href, label }, i) => (
                 <motion.div
                   key={href}
                   custom={i}
-                  variants={navLinkVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
+                  variants={prefersReducedMotion ? {} : navLinkVariants}
+                  initial={prefersReducedMotion ? undefined : "hidden"}
+                  animate={prefersReducedMotion ? undefined : "visible"}
+                  exit={prefersReducedMotion ? undefined : "exit"}
                 >
                   <Link
                     href={href}

@@ -9,6 +9,13 @@
     --navbar-bg: rgba(255, 255, 255, 0.8);
     --navbar-border: #e5e7eb;
     --footer-bg: #f9fafb;
+    --bento-surface: #ffffff;
+    --bento-surface-light: #f9fafb;
+    --bento-surface-dark: #f3f4f6;
+    --bento-surface-darkest: #e5e7eb;
+    --glass-border: rgba(229, 231, 235, 0.5);
+    --glass-highlight: rgba(255, 255, 255, 0.5);
+    scroll-behavior: smooth;
   }
 
   .dark {
@@ -17,6 +24,12 @@
     --navbar-bg: rgba(10, 10, 10, 0.8);
     --navbar-border: #1f2937;
     --footer-bg: #0a0a0a;
+    --bento-surface: #0f172a;
+    --bento-surface-light: #1e293b;
+    --bento-surface-dark: #0f172a;
+    --bento-surface-darkest: #020617;
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-highlight: rgba(255, 255, 255, 0.12);
   }
 
   * {
@@ -24,9 +37,31 @@
   }
 }
 
-html {
-  color: var(--foreground);
-  background: var(--background);
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes gradient-spin {
+  from { --gradient-angle: 0deg; }
+  to { --gradient-angle: 360deg; }
+}
+
+.gradient-border-spin {
+  background: conic-gradient(from var(--gradient-angle), #3b82f6, #22d3ee, #10b981, #34d399, #3b82f6);
+  animation: gradient-spin 6s linear infinite;
 }
 
 body {
@@ -40,5 +75,45 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  .shimmer-sweep {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shimmer-sweep::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.25) 45%,
+      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.25) 55%,
+      transparent 60%
+    );
+    animation: shimmer-sweep 2.5s ease-in-out infinite;
+  }
+
+  @keyframes shimmer-sweep {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .dark .shimmer-sweep::after {
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(255, 255, 255, 0.06) 45%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.06) 55%,
+      transparent 60%
+    );
   }
 }
