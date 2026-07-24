@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { NewsletterIssue } from "@/types";
+import usePrefersReducedMotion from "@/hooks/use-prefers-reduced-motion";
 
 interface ArticleCardProps {
   issue: NewsletterIssue;
@@ -12,6 +13,7 @@ interface ArticleCardProps {
 
 export default function ArticleCard({ issue }: ArticleCardProps) {
   const [isHovered, setIsHovered] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const formattedDate = new Date(issue.date + "T00:00:00").toLocaleDateString("en-US", {
     weekday: "long",
@@ -76,18 +78,17 @@ export default function ArticleCard({ issue }: ArticleCardProps) {
               key={tag}
               initial={{ scale: 1, y: 0 }}
               animate={
-                isHovered
-                  ? {
-                      scale: [1, 1.08, 1],
-                      y: [0, -2, 0],
-                    }
-                  : { scale: 1, y: 0 }
+                prefersReducedMotion
+                  ? { scale: 1, y: 0 }
+                  : isHovered
+                    ? { scale: [1, 1.08, 1], y: [0, -2, 0] }
+                    : { scale: 1, y: 0 }
               }
-              transition={{
-                duration: 0.4,
-                delay: index * 0.05,
-                ease: [0.34, 1.56, 0.64, 1],
-              }}
+              transition={
+                prefersReducedMotion
+                  ? {}
+                  : { duration: 0.4, delay: index * 0.05, ease: [0.34, 1.56, 0.64, 1] }
+              }
               className="rounded-full bg-bento-surface-light px-2.5 py-0.5 text-xs font-medium text-accent-blue dark:bg-bento-surface-dark dark:text-accent-cyan"
             >
               {tag}

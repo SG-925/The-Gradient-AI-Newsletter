@@ -4,6 +4,7 @@ import { useRef, useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
+import usePrefersReducedMotion from "@/hooks/use-prefers-reduced-motion";
 
 interface FeaturedCardProps {
   issue: {
@@ -22,6 +23,7 @@ export default function FeaturedCard({ issue }: FeaturedCardProps) {
   const { scrollY } = useScroll();
   const y = useTransform(scrollY, [200, 800], [40, -20]);
   const [mounted, setMounted] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     setMounted(true);
@@ -33,9 +35,9 @@ export default function FeaturedCard({ issue }: FeaturedCardProps) {
         <div className="group relative">
           <div className="absolute -inset-[2px] rounded-[28px] overflow-hidden opacity-70 transition-opacity duration-700 group-hover:opacity-100">
             <motion.div
-              initial={{ opacity: 0 }}
+              initial={prefersReducedMotion ? false : { opacity: 0 }}
               animate={{ opacity: mounted ? 1 : 0 }}
-              transition={{ duration: 0.8 }}
+              transition={prefersReducedMotion ? {} : { duration: 0.8 }}
               className="absolute inset-0 gradient-border-spin"
             />
           </div>
@@ -103,13 +105,13 @@ export default function FeaturedCard({ issue }: FeaturedCardProps) {
                     {issue.tags.slice(0, 4).map((tag, index) => (
                       <motion.span
                         key={tag}
-                        initial={{ opacity: 0, scale: 0.8, y: 8 }}
+                        initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.8, y: 8 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        transition={{
-                          duration: 0.4,
-                          delay: 0.3 + index * 0.08,
-                          ease: [0.34, 1.56, 0.64, 1],
-                        }}
+                        transition={
+                          prefersReducedMotion
+                            ? {}
+                            : { duration: 0.4, delay: 0.3 + index * 0.08, ease: [0.34, 1.56, 0.64, 1] }
+                        }
                         className="rounded-full bg-bento-surface-light px-3 py-1 text-xs font-medium text-accent-blue dark:bg-bento-surface-dark dark:text-accent-cyan"
                       >
                         {tag}
