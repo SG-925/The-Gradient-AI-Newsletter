@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
+import usePrefersReducedMotion from "@/hooks/use-prefers-reduced-motion";
 
 interface Stat {
   label: string;
@@ -47,6 +48,7 @@ function CountUp({ end, suffix = "", duration = 2 }: { end: number; suffix?: str
 export default function StatsBar() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const computedStats = [
     { ...stats[0], value: 247 },
@@ -58,9 +60,9 @@ export default function StatsBar() {
   return (
     <section ref={ref} className="relative z-10 -mt-20 w-full px-4 sm:px-6">
       <motion.div
-        initial="hidden"
-        animate={isInView ? "visible" : "hidden"}
-        variants={{
+        initial={prefersReducedMotion ? false : "hidden"}
+        animate={prefersReducedMotion ? false : isInView ? "visible" : "hidden"}
+        variants={prefersReducedMotion ? {} : {
           hidden: {},
           visible: {
             transition: {
@@ -74,17 +76,21 @@ export default function StatsBar() {
         {computedStats.map((stat) => (
           <motion.div
             key={stat.label}
-            variants={{
-              hidden: { opacity: 0, y: 30 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                transition: {
-                  duration: 0.6,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                },
-              },
-            }}
+            variants={
+              prefersReducedMotion
+                ? {}
+                : {
+                    hidden: { opacity: 0, y: 30 },
+                    visible: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        duration: 0.6,
+                        ease: [0.25, 0.46, 0.45, 0.94],
+                      },
+                    },
+                  }
+            }
             className="flex min-w-[160px] flex-1 flex-col items-center rounded-2xl border border-glass-border bg-glass-highlight px-6 py-5 backdrop-blur-xl dark:bg-bento-surface/80 md:min-w-[200px]"
           >
             <span className="text-3xl font-bold bg-gradient-to-r from-accent-blue to-accent-cyan bg-clip-text text-transparent md:text-4xl dark:from-accent-cyan dark:to-accent-emerald">

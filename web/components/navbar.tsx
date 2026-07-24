@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import ThemeToggle from "@/components/theme-toggle";
+import usePrefersReducedMotion from "@/hooks/use-prefers-reduced-motion";
 
 const navLinkVariants = {
   hidden: { opacity: 0, y: -8 },
@@ -18,6 +19,7 @@ const navLinkVariants = {
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -54,10 +56,10 @@ export default function Navbar() {
             <motion.div
               key={href}
               custom={0}
-              variants={navLinkVariants}
-              initial="hidden"
-              animate="visible"
-              exit="exit"
+              variants={prefersReducedMotion ? {} : navLinkVariants}
+              initial={prefersReducedMotion ? undefined : "hidden"}
+              animate={prefersReducedMotion ? undefined : "visible"}
+              exit={prefersReducedMotion ? undefined : "exit"}
             >
               <Link
                 href={href}
@@ -77,12 +79,11 @@ export default function Navbar() {
           <motion.button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-800"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            {...(prefersReducedMotion ? {} : { whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 } })}
             aria-label="Toggle menu"
             aria-expanded={mobileMenuOpen}
           >
-            <motion.svg
+            <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
               height="24"
@@ -97,10 +98,10 @@ export default function Navbar() {
                 {mobileMenuOpen ? (
                   <motion.g
                     key="close"
-                    initial={{ opacity: 0, rotate: -90 }}
+                    initial={prefersReducedMotion ? undefined : { opacity: 0, rotate: -90 }}
                     animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0, rotate: 90 }}
-                    transition={{ duration: 0.2 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, rotate: 90 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.2 }}
                   >
                     <path d="M18 6 6 18" />
                     <path d="m6 6 12 12" />
@@ -108,10 +109,10 @@ export default function Navbar() {
                 ) : (
                   <motion.g
                     key="open"
-                    initial={{ opacity: 0, rotate: 90 }}
+                    initial={prefersReducedMotion ? undefined : { opacity: 0, rotate: 90 }}
                     animate={{ opacity: 1, rotate: 0 }}
-                    exit={{ opacity: 0, rotate: -90 }}
-                    transition={{ duration: 0.2 }}
+                    exit={prefersReducedMotion ? undefined : { opacity: 0, rotate: -90 }}
+                    transition={prefersReducedMotion ? {} : { duration: 0.2 }}
                   >
                     <path d="M3 12h18" />
                     <path d="M3 6h18" />
@@ -119,7 +120,7 @@ export default function Navbar() {
                   </motion.g>
                 )}
               </AnimatePresence>
-            </motion.svg>
+            </svg>
           </motion.button>
         </div>
       </div>
@@ -127,10 +128,10 @@ export default function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
+            initial={prefersReducedMotion ? undefined : { opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25, ease: "easeInOut" }}
+            exit={prefersReducedMotion ? undefined : { opacity: 0, height: 0 }}
+            transition={prefersReducedMotion ? {} : { duration: 0.25, ease: "easeInOut" }}
             className={`overflow-hidden md:hidden ${
               scrolled
                 ? "border-t border-bento-surface-dark/30 dark:border-bento-surface-darkest/30"
@@ -142,10 +143,10 @@ export default function Navbar() {
                 <motion.div
                   key={href}
                   custom={i}
-                  variants={navLinkVariants}
-                  initial="hidden"
-                  animate="visible"
-                  exit="exit"
+                  variants={prefersReducedMotion ? {} : navLinkVariants}
+                  initial={prefersReducedMotion ? undefined : "hidden"}
+                  animate={prefersReducedMotion ? undefined : "visible"}
+                  exit={prefersReducedMotion ? undefined : "exit"}
                 >
                   <Link
                     href={href}

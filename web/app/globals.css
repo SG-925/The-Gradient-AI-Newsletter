@@ -15,6 +15,7 @@
     --bento-surface-darkest: #e5e7eb;
     --glass-border: rgba(229, 231, 235, 0.5);
     --glass-highlight: rgba(255, 255, 255, 0.5);
+    scroll-behavior: smooth;
   }
 
   .dark {
@@ -23,10 +24,10 @@
     --navbar-bg: rgba(10, 10, 10, 0.8);
     --navbar-border: #1f2937;
     --footer-bg: #0a0a0a;
-    --bento-surface: #111827;
-    --bento-surface-light: #1f2937;
-    --bento-surface-dark: #030712;
-    --bento-surface-darkest: #000000;
+    --bento-surface: #0f172a;
+    --bento-surface-light: #1e293b;
+    --bento-surface-dark: #0f172a;
+    --bento-surface-darkest: #020617;
     --glass-border: rgba(255, 255, 255, 0.08);
     --glass-highlight: rgba(255, 255, 255, 0.12);
   }
@@ -36,10 +37,15 @@
   }
 }
 
-html {
-  color: var(--foreground);
-  background: var(--background);
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @property --gradient-angle {

@@ -5,6 +5,7 @@ import { NewsletterIssue } from "@/types";
 import ArticleCard from "@/components/article-card";
 import ScrollReveal from "@/components/scroll-reveal";
 import { motion } from "framer-motion";
+import usePrefersReducedMotion from "@/hooks/use-prefers-reduced-motion";
 
 const PAGE_SIZE = 9;
 
@@ -25,15 +26,15 @@ function ShimmerSearchIcon() {
   );
 }
 
-function EmptyStateIllustration() {
+function EmptyStateIllustration({ prefersReducedMotion }: { prefersReducedMotion: boolean }) {
   return (
     <motion.svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 200 200"
       className="mb-6 h-32 w-32 text-accent-cyan dark:text-accent-emerald"
-      initial={{ opacity: 0, scale: 0.8 }}
+      initial={prefersReducedMotion ? false : { opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
+      transition={prefersReducedMotion ? {} : { duration: 0.6, ease: [0.34, 1.56, 0.64, 1] }}
     >
       <defs>
         <linearGradient id="emptyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -48,8 +49,8 @@ function EmptyStateIllustration() {
         r="8"
         fill="currentColor"
         opacity="0.3"
-        animate={{ cx: [80, 120, 80], cy: [72, 55, 72] }}
-        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        animate={prefersReducedMotion ? {} : { cx: [80, 120, 80], cy: [72, 55, 72] }}
+        transition={prefersReducedMotion ? {} : { duration: 4, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.circle
         cx="120"
@@ -57,8 +58,8 @@ function EmptyStateIllustration() {
         r="6"
         fill="currentColor"
         opacity="0.2"
-        animate={{ cx: [120, 85, 120], cy: [108, 125, 108] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        animate={prefersReducedMotion ? {} : { cx: [120, 85, 120], cy: [108, 125, 108] }}
+        transition={prefersReducedMotion ? {} : { duration: 5, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.circle
         cx="105"
@@ -66,8 +67,8 @@ function EmptyStateIllustration() {
         r="5"
         fill="currentColor"
         opacity="0.15"
-        animate={{ cx: [105, 135, 80, 105], cy: [130, 100, 140, 130] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        animate={prefersReducedMotion ? {} : { cx: [105, 135, 80, 105], cy: [130, 100, 140, 130] }}
+        transition={prefersReducedMotion ? {} : { duration: 6, repeat: Infinity, ease: "easeInOut" }}
       />
       <line x1="85" y1="85" x2="138" y2="138" stroke="currentColor" strokeWidth="3" strokeLinecap="round" opacity="0.5" />
     </motion.svg>
@@ -80,6 +81,7 @@ export default function ArchivePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [displayCount, setDisplayCount] = useState(PAGE_SIZE);
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   useEffect(() => {
     fetch("/api/issues")
@@ -177,9 +179,9 @@ export default function ArchivePage() {
         </h1>
         <motion.div
           className="mt-3 h-1 rounded-full bg-gradient-to-r from-accent-blue via-accent-cyan to-accent-green"
-          initial={{ scaleX: 0 }}
+          initial={prefersReducedMotion ? false : { scaleX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
+          transition={prefersReducedMotion ? {} : { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
           style={{ transformOrigin: "left" }}
         />
         <p className="mt-2 text-gray-600 dark:text-gray-400">
@@ -193,13 +195,13 @@ export default function ArchivePage() {
             {statsItems.map((stat, i) => (
               <motion.div
                 key={stat.label}
-                initial={{ opacity: 0, y: 24 }}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: i * 0.08,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                }}
+                transition={
+                  prefersReducedMotion
+                    ? {}
+                    : { duration: 0.5, delay: i * 0.08, ease: [0.25, 0.46, 0.45, 0.94] }
+                }
                 className="relative overflow-hidden rounded-2xl border border-gray-200/60 bg-white/70 p-4 backdrop-blur-sm
                   dark:border-bento-surface-light/40 dark:bg-bento-surface/60 dark:backdrop-blur-md
                   hover:border-accent-blue/40 hover:shadow-[0_0_20px_rgba(59,130,246,0.12)]
@@ -248,8 +250,7 @@ export default function ArchivePage() {
             <motion.button
               onClick={goToPrevDay}
               disabled={currentDateIndex >= uniqueDates.length - 1}
-              whileHover={{ scale: currentDateIndex >= uniqueDates.length - 1 ? 1 : 1.06 }}
-              whileTap={{ scale: currentDateIndex >= uniqueDates.length - 1 ? 1 : 0.96 }}
+              {...(prefersReducedMotion ? {} : { whileHover: { scale: currentDateIndex >= uniqueDates.length - 1 ? 1 : 1.06 }, whileTap: { scale: currentDateIndex >= uniqueDates.length - 1 ? 1 : 0.96 } })}
               className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700
                 transition-colors hover:border-accent-blue hover:text-accent-blue
                 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:text-gray-700
@@ -262,8 +263,7 @@ export default function ArchivePage() {
             {selectedDate ? (
               <motion.button
                 onClick={clearDateFilter}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+                {...(prefersReducedMotion ? {} : { whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 } })}
                 className="shimmer-sweep rounded-full border border-accent-blue/30 bg-white px-4 py-2 text-sm font-medium text-accent-blue
                   dark:border-accent-cyan/20 dark:bg-bento-surface dark:text-accent-cyan"
               >
@@ -283,8 +283,7 @@ export default function ArchivePage() {
             <motion.button
               onClick={goToNextDay}
               disabled={currentDateIndex <= 0}
-              whileHover={{ scale: currentDateIndex <= 0 ? 1 : 1.06 }}
-              whileTap={{ scale: currentDateIndex <= 0 ? 1 : 0.96 }}
+              {...(prefersReducedMotion ? {} : { whileHover: { scale: currentDateIndex <= 0 ? 1 : 1.06 }, whileTap: { scale: currentDateIndex <= 0 ? 1 : 0.96 } })}
               className="rounded-full border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700
                 transition-colors hover:border-accent-blue hover:text-accent-blue
                 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:text-gray-700
@@ -319,11 +318,11 @@ export default function ArchivePage() {
         </div>
       ) : filteredIssues.length === 0 ? (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={prefersReducedMotion ? false : { opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="flex flex-col items-center justify-center py-20 text-center"
         >
-          <EmptyStateIllustration />
+          <EmptyStateIllustration prefersReducedMotion={prefersReducedMotion} />
           <h3 className="mb-2 text-xl font-semibold text-gray-900 dark:text-white">
             No issues found
           </h3>
@@ -340,8 +339,7 @@ export default function ArchivePage() {
                 setSearchQuery("");
                 setSelectedDate(null);
               }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              {...(prefersReducedMotion ? {} : { whileHover: { scale: 1.05 }, whileTap: { scale: 0.95 } })}
               className="shimmer-sweep mt-4 rounded-full bg-accent-blue px-6 py-2.5 text-sm font-medium text-white
                 transition-colors hover:bg-accent-blue/90 dark:bg-accent-cyan dark:text-gray-900 dark:hover:bg-accent-cyan/90"
             >
@@ -355,14 +353,14 @@ export default function ArchivePage() {
             {paginatedIssues.map((issue, i) => (
               <motion.div
                 key={issue.date + issue.id}
-                initial={{ opacity: 0, y: 24 }}
+                initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-40px" }}
-                transition={{
-                  duration: 0.5,
-                  delay: i * 0.05,
-                  ease: [0.25, 0.46, 0.45, 0.94],
-                }}
+                transition={
+                  prefersReducedMotion
+                    ? {}
+                    : { duration: 0.5, delay: i * 0.05, ease: [0.25, 0.46, 0.45, 0.94] }
+                }
               >
                 <ArticleCard issue={issue} />
               </motion.div>
@@ -373,8 +371,7 @@ export default function ArchivePage() {
             <div className="mt-10 flex justify-center">
               <motion.button
                 onClick={() => setDisplayCount((c) => c + PAGE_SIZE)}
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
+                {...(prefersReducedMotion ? {} : { whileHover: { scale: 1.04 }, whileTap: { scale: 0.96 } })}
                 className="rounded-full border border-gray-300 bg-white px-8 py-3 text-sm font-semibold text-gray-700
                   transition-all hover:border-accent-blue hover:text-accent-blue
                   dark:border-gray-700 dark:bg-bento-surface dark:text-gray-300

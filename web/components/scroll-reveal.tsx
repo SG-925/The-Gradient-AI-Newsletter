@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useRef, ReactNode, Children } from "react";
+import usePrefersReducedMotion from "@/hooks/use-prefers-reduced-motion";
 
 interface ScrollRevealProps {
   children: ReactNode;
@@ -40,22 +41,25 @@ export default function ScrollReveal({
 }: ScrollRevealProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-40px" });
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const containerVariant = containerVariants[direction];
 
-  const transition = staggerChildren
-    ? {
-        duration: 0.5,
-        delay,
-        ease: [0.25, 0.46, 0.45, 0.94],
-        staggerChildren: staggerChildren[0] ?? 0.1,
-        delayChildren: staggerChildren[1] ?? 0,
-      }
-    : {
-        duration: 0.5,
-        delay,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      };
+  const transition = prefersReducedMotion
+    ? { duration: 0, delay }
+    : staggerChildren
+      ? {
+          duration: 0.5,
+          delay,
+          ease: [0.25, 0.46, 0.45, 0.94],
+          staggerChildren: staggerChildren[0] ?? 0.1,
+          delayChildren: staggerChildren[1] ?? 0,
+        }
+      : {
+          duration: 0.5,
+          delay,
+          ease: [0.25, 0.46, 0.45, 0.94],
+        };
 
   const shouldStagger =
     staggerChildren !== undefined && Children.count(children) > 1;
@@ -64,7 +68,7 @@ export default function ScrollReveal({
     ? Children.map(children, (child, i) => (
         <motion.div
           key={i}
-          variants={childVariants}
+          variants={prefersReducedMotion ? {} : childVariants}
           custom={i}
         >
           {child}
@@ -75,9 +79,9 @@ export default function ScrollReveal({
   return (
     <motion.div
       ref={ref}
-      initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
-      variants={containerVariant}
+      initial={prefersReducedMotion ? false : "hidden"}
+      animate={prefersReducedMotion ? false : isInView ? "visible" : "hidden"}
+      variants={prefersReducedMotion ? {} : containerVariant}
       transition={transition}
       className={className}
     >

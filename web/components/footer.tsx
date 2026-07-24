@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
+import usePrefersReducedMotion from "@/hooks/use-prefers-reduced-motion";
 
 export default function Footer() {
+  const prefersReducedMotion = usePrefersReducedMotion();
   return (
     <footer className="relative bg-bento-surface-light dark:bg-bento-surface">
       <div className="absolute inset-x-0 top-0 h-px overflow-hidden">
@@ -18,9 +20,9 @@ export default function Footer() {
           </div>
           <motion.p
             className="text-sm text-gray-500 dark:text-gray-500"
-            initial={{ opacity: 0, y: 6 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.5, ease: "easeOut" }}
+            transition={prefersReducedMotion ? {} : { delay: 0.3, duration: 0.5, ease: "easeOut" }}
           >
             © {new Date().getFullYear()} The Gradient. All rights reserved.
           </motion.p>
